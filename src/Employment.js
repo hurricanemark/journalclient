@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { User } from './User';
 import { variables } from './Variables';
 
 export class Employment extends Component {
@@ -43,7 +44,7 @@ export class Employment extends Component {
                 <button type="button" className='btn btn-primary m-2 float-end' data-toggle="modal" data-target="#employModal" onClick={() => this.addClick()}>
                     Add Employee
                 </button>
-                <table className='table table-striped'>
+                <table className='table table-responsive-sm table-striped table-hover table-sm'>
                     <thead>
                         <tr>
                             <th>EmployeeId</th>
@@ -66,16 +67,41 @@ export class Employment extends Component {
                                 <td>{employee.PhotoFileName}</td>
                                 <td>
 
-                                    <button type="button" className="btn btn-light mr-1" data-toggle="modal" data-target="#employModal"  onClick={() => this.editClick(employee)}>   
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <button type="button" className="btn btn-light mr-1" 
+                                        data-toggle="modal" 
+                                        data-target="#employModal"
+                                        data-mdb-toggle="tooltip" 
+                                        data-mdb-placement="top" 
+                                        title="Edit - Change record in place" 
+                                        onClick={() => this.editClick(employee)}>   
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil-square" viewBox="0 0 16 16">
                                         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                         <path fillRule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/></svg>
                                     </button>
 
-                                    <button type="button" className="btn btn-light mr-1" data-toggle="modal" data-target="#employModal"  onClick={() => this.deleteClick(employee.EmployeeId)}>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3" viewBox="0 0 16 16">
+                                    <button type="button" className="btn btn-light mr-1" 
+                                        data-toggle="modal" 
+                                         
+                                        data-mdb-toggle="tooltip" 
+                                        data-mdb-placement="top" 
+                                        title="Delete record" 
+                                        onClick={() => this.deleteClick(employee.EmployeeId)}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3" viewBox="0 0 16 16">
                                         <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/></svg>
                                     </button>
+
+                                    <button type="button" className="btn btn-light mr-1" 
+                                        data-toggle="modal" 
+                                        data-target="#employModal" 
+                                        data-mdb-toggle="tooltip" 
+                                        data-mdb-placement="top" 
+                                        title="Export record into PDF file"  
+                                        onClick={() => this.exportPdfClick(employee.EmployeeId)}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filetype-pdf" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M14 4.5V14a2 2 0 0 1-2 2h-1v-1h1a1 1 0 0 0 1-1V4.5h-2A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v9H2V2a2 2 0 0 1 2-2h5.5L14 4.5ZM1.6 11.85H0v3.999h.791v-1.342h.803c.287 0 .531-.057.732-.173.203-.117.358-.275.463-.474a1.42 1.42 0 0 0 .161-.677c0-.25-.053-.476-.158-.677a1.176 1.176 0 0 0-.46-.477c-.2-.12-.443-.179-.732-.179Zm.545 1.333a.795.795 0 0 1-.085.38.574.574 0 0 1-.238.241.794.794 0 0 1-.375.082H.788V12.48h.66c.218 0 .389.06.512.181.123.122.185.296.185.522Zm1.217-1.333v3.999h1.46c.401 0 .734-.08.998-.237a1.45 1.45 0 0 0 .595-.689c.13-.3.196-.662.196-1.084 0-.42-.065-.778-.196-1.075a1.426 1.426 0 0 0-.589-.68c-.264-.156-.599-.234-1.005-.234H3.362Zm.791.645h.563c.248 0 .45.05.609.152a.89.89 0 0 1 .354.454c.079.201.118.452.118.753a2.3 2.3 0 0 1-.068.592 1.14 1.14 0 0 1-.196.422.8.8 0 0 1-.334.252 1.298 1.298 0 0 1-.483.082h-.563v-2.707Zm3.743 1.763v1.591h-.79V11.85h2.548v.653H7.896v1.117h1.606v.638H7.896Z"/>
+                                        </svg>
+                                    </button>
+
                                 </td>
                             </tr>
                         )}
@@ -98,8 +124,14 @@ export class Employment extends Component {
                                     <input type="text" className="form-control" value={EmployeeName} onChange={this.changeEmployeeName}/><br/>
                                 </div>
                                 <div className="input-group mb-3">
+                                    <span className="input-group-text">User</span>
+                                    <select className="form-control" onChange={this.changeUserEmail} value={User}>
+                                        {users.map(user => <option key={user.UserId}>{user.UserEmail}</option>)}
+                                    </select>
+                                </div>                                
+                                <div className="input-group mb-3">
                                     <span className="input-group-text">EmployeeTitle</span>
-                                    <select className="form-select" onChange={this.changeEmployeeTitle} value={variables.Titles}>
+                                    <select className="form-select" onChange={this.changeEmployeeTitle}>
                                         {variables.Titles.map(title => <option key={EmployeeTitle}> {title.EmployeeTitle}
                                         </option>)}
                                     </select>
@@ -117,12 +149,12 @@ export class Employment extends Component {
 
 
                         </div>
-                        {EmployeeId === 0? <button type="button" className="btn btn-primary float-start" onClick={() => this.createClick()}>Create</button>:null}
+                        {EmployeeId === 0? <button type="button" className="btn btn-primary float-start" data-dismiss="modal" onClick={() => this.createClick()}>Create</button>:null}
 
-                        {EmployeeId !== 0? <button type="button" className="btn btn-primary float-start" onClick={() => this.updateClick()}>Update</button>:null}   
+                        {EmployeeId !== 0? <button type="button" className="btn btn-primary float-start" data-dismiss="modal" onClick={() => this.updateClick()}>Update</button>:null}   
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-default" data-dismiss="modal">Cancel</button>
                     </div>
                 </div>
                 </div>
@@ -144,7 +176,7 @@ export class Employment extends Component {
             EmployeeId:0,
             EmployeeTitle: variables.Titles,
             DateOfJoining: "",
-            PhotoFileName: "anonymous.png",
+            PhotoFileName: "",
             PhotsPath: variables.PHOTO_URL
 
          
@@ -189,7 +221,7 @@ export class Employment extends Component {
             EmployeeId: 0,
             EmployeeName: "",
             EmployeeTitle: "",
-            PhotoFileName: "anonymous.png",
+            PhotoFileName: "Photos/BadAss.JPG",
             DateOfJoining: ""
         })
     }
@@ -272,6 +304,23 @@ export class Employment extends Component {
             })
         }
     } 
+
+    exportPdfClick(id) {
+        fetch(variables.API_URL+'employee/' + id, {
+            method: 'GET',
+            headers: {
+                'Accept': 'appication/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then((result) => {
+            alert(JSON.stringify(result));
+            // this.refreshList();
+        }, (error) => {
+            alert('Failed to export employment record to PDF file');
+        })
+    }
 
     imageUpload = (e) => {
         e.preventDefault();
