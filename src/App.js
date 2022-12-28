@@ -24,7 +24,7 @@ function App() {
             <NavLink className='btn btn-light btn-outline-primary' to='/user'>User</NavLink>
           </li>
           <li className='nav-item- m-1'>
-            <NavLink className='btn btn-light btn-outline-primary' to='/employment'>Employment</NavLink>
+            <NavLink className='btn btn-light btn-outline-primary' to='/employee'>Employment</NavLink>
           </li>
         </ul>
       </nav>
@@ -32,7 +32,7 @@ function App() {
       <Routes>
         <Route exact path='/home' element={<Home/>}/>
         <Route exact path='/user' element={<User/>}/>
-        <Route exact path='/employment' element={<Employment/>}/>
+        <Route exact path='/employee' element={<Employment/>}/>
       </Routes>
     </div>
     </BrowserRouter>
