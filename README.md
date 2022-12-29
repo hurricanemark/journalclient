@@ -1,3 +1,123 @@
+# <span style="color:yellow">JournalClient - A Client Frontend React App  </span>
+
+This separate frontend ReactJS project is referencing the backend Django Python server [https://github.com/hurricanemark/BusinessPersonemChronicler](https://github.com/hurricanemark/BusinessPersonelChronicler.git)
+
+```bash
+npx create-react-app journalclient
+cd journalclient
+code .
+```
+
+Edit `src/App.js` and `public/index.html`
+
+```javascript
+/* src/App.js */
+import logo from './logo.svg';
+import './App.css';
+
+function App() {
+  return (
+    <div className="App container">
+      <h3 className="d-flex justify-content-center m-3">
+        React JS Frontend
+      </h3>  
+    </div>
+  );
+}
+
+export default App;
+```
+
+Insert CDN links for css/javascript from [getbootstrap.com](https://getbootstrap.com/docs/5.3/getting-started/introduction/) code into `public/index.html`
+at the head tag and at bottom of body tag.
+
+**Install React Router DOM**
+
+```bash
+npm install react-router-dom
+```
+
+Add files `src/Home.js`, `src/User.js`, and `src/Employment.js` to extend components.
+
+```javascript
+/* src/Home.js */
+import React, {Component} from 'react';
+
+export class Home extends Component {
+    render() {
+        return (
+            <div>
+                <h3>This is the Home page</h3>
+            </div>
+        )
+    }
+}
+```
+
+```javascript
+/* scr/Employment.js */
+import React, {Component} from 'react';
+
+export class Employment extends Component {
+    render() {
+        return (
+            <div>
+                <h3>This is the Employment page</h3>
+            </div>
+        )
+    }
+}
+```
+
+```javascript
+/* src/User.js */
+import React, {Component} from 'react';
+
+export class User extends Component {
+    render() {
+        return (
+            <div>
+                <h3>This is the User page</h3>
+            </div>
+        )
+    }
+}
+```
+
+Register extended components in `src/App.js`
+
+```javascript
+...
+import {Home} from './Home';
+import {User} from './User';
+import {Employment} from './Employment';
+/* modules needed for routing*/
+import { BrowserRoute, Route, Routes, NavLink } from 'react-router-dom';
+...
+
+```
+
+Create file `src/Variables.js` to store API endpoints.  i.e. Referencing the endpoints from the Backend server.
+```javascript
+export const variables = {
+    API_URL:"http://127.0.0.1:8000/",
+    PHOTO_URL:"http://127.0.0.1:8000/Photos/"
+}
+```
+
+Very usefull [Bootstrap Icons](https://icons.getbootstrap.com/) for `edit` and `delete` to liven up the frontend.
+
+## Frontend Snapshots
+
+![Home](./public/static/HomePage.PNG)
+
+![Account Page](./public/static/AccountPage.PNG)
+
+![EmployeeProfile Page](./public/static/PersonelPage.PNG)
+
+
+<hr />
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
