@@ -191,8 +191,8 @@ export class User extends Component {
                 <button type="button" className='btn btn-primary m-2 float-end' data-toggle="modal" data-target="#userModal" onClick={() => this.addClick()}>
                     Add User
                 </button>
-                <table className='table table-responsive-sm table-striped table-hover table-sm'>
-
+                <table className='table table-responsive-sm table-striped table-hover table-sm caption-top'>
+                    <caption className='fs-4'>Super users</caption>
                     <thead>
                         <tr>
                             <th>

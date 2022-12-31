@@ -16,6 +16,7 @@ export class Employment extends Component {
             EmployeeName,
             EmployeeTitle,
             DateOfJoining,
+            EmployeeStatus,
             PhotoFileName,
             PhotoPath
         }=this.state;
@@ -35,6 +36,7 @@ export class Employment extends Component {
                             <th>EmployeeName</th>
                             <th>EmployeeTitle</th>
                             <th>DateOfJoining</th>
+                            <th>Status</th>
                             <th>PhotoFileName</th>
                             <th>
                                 Options
@@ -48,6 +50,7 @@ export class Employment extends Component {
                                 <td>{employee.EmployeeName}</td>
                                 <td>{employee.EmployeeTitle}</td>
                                 <td>{employee.DateOfJoining}</td>
+                                <td>{employee.EmployeeStatus}</td>
                                 <td>{employee.PhotoFileName}</td>
                                 <td>
 
@@ -68,7 +71,7 @@ export class Employment extends Component {
                                          
                                         data-mdb-toggle="tooltip" 
                                         data-mdb-placement="top" 
-                                        title="Delete record" 
+                                        title="Deactivate record" 
                                         onClick={() => this.deleteClick(employee.EmployeeId)}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash3" viewBox="0 0 16 16">
                                         <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5ZM11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H2.506a.58.58 0 0 0-.01 0H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1h-.995a.59.59 0 0 0-.01 0H11Zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5h9.916Zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47ZM8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5Z"/></svg>
@@ -76,7 +79,7 @@ export class Employment extends Component {
 
                                     <button type="button" className="btn btn-light mr-1" 
                                         data-toggle="modal" 
-                                        data-target="#employModal" 
+                                        data-target="#exportModal" 
                                         data-mdb-toggle="tooltip" 
                                         data-mdb-placement="top" 
                                         title="Export record into PDF file"  
@@ -86,6 +89,17 @@ export class Employment extends Component {
                                         </svg>
                                     </button>
 
+                                    <button type="button" className="btn btn-light mr-1" 
+                                        data-toggle="modal" 
+                                        data-target="#confidentialModal" 
+                                        data-mdb-toggle="tooltip" 
+                                        data-mdb-placement="top" 
+                                        title="Confidential entry"  
+                                        onClick={() => this.confidentialEntryClick(employee.EmployeeId)}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-clipboard-pulse" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M10 1.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-1Zm-5 0A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5v-1Zm-2 0h1v1H3a1 1 0 0 0-1 1V14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V3.5a1 1 0 0 0-1-1h-1v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2Zm6.979 3.856a.5.5 0 0 0-.968.04L7.92 10.49l-.94-3.135a.5.5 0 0 0-.895-.133L4.232 10H3.5a.5.5 0 0 0 0 1h1a.5.5 0 0 0 .416-.223l1.41-2.115 1.195 3.982a.5.5 0 0 0 .968-.04L9.58 7.51l.94 3.135A.5.5 0 0 0 11 11h1.5a.5.5 0 0 0 0-1h-1.128L9.979 5.356Z"/>
+                                        </svg>
+                                    </button>
                                 </td>
                             </tr>
                         )}
@@ -123,7 +137,12 @@ export class Employment extends Component {
                                 <div className="input-group mb-3">
                                     <span className="input-group-text">DateOfJoining</span>
                                     <input type="date" className="form-control" value={DateOfJoining} onChange={this.changeDateOfJoining}/>
-                                </div>                                
+                                </div>         
+
+                                <div className="input-group mb-3">
+                                    <span className="input-group-text">Status</span>
+                                    <input type="text" className="form-control" value={EmployeeStatus} onChange={this.changeEmploymentStatus}/>
+                                </div>      
                             </div>
                             <div className="p-2 w-50 bd-highlight">
                                 <img width="250px" height="250px" src={PhotoPath + PhotoFileName} alt="profilephoto"/>
@@ -160,6 +179,7 @@ export class Employment extends Component {
             EmployeeId:0,
             EmployeeTitle: variables.Titles,
             DateOfJoining: "",
+            EmployeeStatus:"",
             PhotoFileName: "",
             PhotsPath: variables.PHOTO_URL
         }
@@ -197,6 +217,10 @@ export class Employment extends Component {
         this.setState({DateOfJoining: e.target.value});
     }    
 
+    changeEmploymentStatus = (e) => {
+        this.setState({EmployeeStatus: e.target.value});
+    }
+
     addClick() {
         this.setState({
             modalTitle: "Add Employee",
@@ -204,7 +228,8 @@ export class Employment extends Component {
             EmployeeName: "",
             EmployeeTitle: "",
             PhotoFileName: "Photos/BadAss.JPG",
-            DateOfJoining: ""
+            DateOfJoining: "",
+            EmployeeStatus: ""
         })
     }
 
@@ -216,6 +241,7 @@ export class Employment extends Component {
             EmployeeName: employee.EmployeeName,
             EmployeeTitle: employee.EmployeeTitle,
             DateOfJoining: employee.DateOfJoining,
+            EmployeeStatus: employee.EmployeeStatus,
             PhotoFileName: employee.PhotoFileName
         })
     }
@@ -231,7 +257,8 @@ export class Employment extends Component {
                 EmployeeName: this.state.EmployeeName,
                 EmployeeTitle: this.state.EmployeeTitle,
                 PhotoFileName: this.state.PhotoFileName,
-                DateOfJoining: this.state.DateOfJoining
+                DateOfJoining: this.state.DateOfJoining,
+                EmployeeStatus: this.state.EmployeeStatus
             })
         })
         .then(res => res.json())
@@ -255,7 +282,8 @@ export class Employment extends Component {
                 EmployeeName: this.state.EmployeeName,
                 EmployeeTitle: this.state.EmployeeTitle,
                 PhotoFileName: this.state.PhotoFileName,
-                DateOfJoining: this.state.DateOfJoining
+                DateOfJoining: this.state.DateOfJoining,
+                EmployeeStatus: this.state.EmployeeStatus
             })
         })
         .then(res => res.json())
@@ -269,6 +297,9 @@ export class Employment extends Component {
 
 
     deleteClick(id) {
+        /* TODO: move record to inactive table instead of permanent deletion */
+         
+
         if (window.confirm('Are you sure?')) {
             fetch(variables.API_URL+'employee/' + id, {
                 method: 'DELETE',

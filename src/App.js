@@ -28,7 +28,7 @@ function App() {
             <NavLink className='btn btn-light btn-outline-primary' to='/user'>Account</NavLink>
           </li>
           <li className='nav-item- m-1'>
-            <NavLink className='btn btn-light btn-outline-primary' to='/employee'>Employment Profile</NavLink>
+            <NavLink className='btn btn-light btn-outline-primary' to='/employee'>Personel Profile</NavLink>
           </li>
         </ul>
       </nav>
