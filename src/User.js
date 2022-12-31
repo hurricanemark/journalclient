@@ -192,7 +192,7 @@ export class User extends Component {
                     Add User
                 </button>
                 <table className='table table-responsive-sm table-striped table-hover table-sm caption-top'>
-                    <caption className='fs-4'>Super users</caption>
+                    <caption className='fs-5'>Super users</caption>
                     <thead>
                         <tr>
                             <th>

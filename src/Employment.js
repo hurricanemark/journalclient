@@ -29,7 +29,8 @@ export class Employment extends Component {
                 <button type="button" className='btn btn-primary m-2 float-end' data-toggle="modal" data-target="#employModal" onClick={() => this.addClick()}>
                     Add Employee
                 </button>
-                <table className='table table-responsive-sm table-striped table-hover table-sm'>
+                <table className='table table-responsive-sm table-striped table-hover table-sm caption-top'>
+                    <caption className='fs-5'>Tracking Personel Progress</caption>
                     <thead>
                         <tr>
                             <th>EmployeeId</th>
