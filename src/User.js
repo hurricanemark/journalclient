@@ -62,6 +62,7 @@ export class User extends Component {
 
         this.setState({users: sortedData});
     }
+    
     refreshList() {
         fetch(variables.API_URL+'user')
         .then(response => response.json())

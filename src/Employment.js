@@ -2,8 +2,254 @@ import React, {Component} from 'react';
 import { User } from './User';
 import { variables } from './Variables';
 
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 export class Employment extends Component {
+
+    constructor(props) {
+        super(props);
+    
+        this.state = {
+            users: [],
+            employees: [],
+            modalTitle: "",
+
+            EmployeeName: "",
+            EmployeeId:0,
+            EmployeeTitle: variables.Titles,
+            DateOfJoining: "",
+            EmployeeStatus:"",
+            PhotoFileName: "",
+            PhotsPath: variables.PHOTO_URL,
+
+            EmployeeNameFilter: "",
+            DateOfJoiningFilter: "",
+            EmployeeWithoutFilter: []
+        }
+    }
+
+    FilterFnc() {
+        var employeeNameFilter = this.state.EmployeeName;
+        var employeeDateOfJoiningFilter = this.state.DateOfJoining;
+        var filteredData = this.state.EmployeeWithoutFilter.filter(
+            function(el) {
+                return el.EmployeeName.toString().toLowerCase().includes(
+                    employeeNameFilter.toString().trim().toLowerCase()
+                )&&
+                el.DateOfJoining.toString().toLowerCase().includes(
+                    employeeDateOfJoiningFilter.toString().trim().toLowerCase()
+                )
+            }
+        );
+        this.setState({ employees: filteredData });
+    }
+
+
+    sortResults(prop, asc) {
+        var sortedData = this.state.EmployeeWithoutFilter.sort(function(a,b) {
+            if (asc){
+                return (a[prop]>b[prop])?1:((a[prop]<b[prop])?-1:0);
+            } else {
+                return (b[prop]>a[prop])?1:((b[prop]<a[prop])?-1:0);
+            }
+        });
+        this.setState({ employees: sortedData });
+    }
+
+
+    refreshList() {
+        fetch(variables.API_URL+'employee')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            this.setState({employees:data, EmployeeWithoutFilter: data});
+        });
+
+        fetch(variables.API_URL+'user')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            this.setState({users:data});
+        });
+    }
+
+    componentDidMount() {
+        this.refreshList();
+    }
+
+    changeEmployeeName = (e) => {
+        this.setState({EmployeeName: e.target.value});
+    }
+
+    changeEmployeeTitle = (e) => {
+        this.setState({EmployeeTitle: e.target.value});
+    }
+
+    changeDateOfJoining = (e) => {
+        this.setState({DateOfJoining: e.target.value});
+    }    
+
+    changeEmploymentStatus = (e) => {
+        this.setState({EmployeeStatus: e.target.value});
+    }
+
+    generatePDF = (e) => {
+        const report = new jsPDF('portrait', 'pt', 'a4');
+        var finalY = report.lastAutoTable.finalY || 10;
+        report.text('Personel Report', 14, finalY + 15);
+        report.autoTable({html: '#frontReport'});
+        report.save('frontReport.pdf');
+        alert('Personel table exported to local drive.');
+    }
+
+
+    addClick() {
+        this.setState({
+            modalTitle: "Add Employee",
+            EmployeeId: 0,
+            EmployeeName: "",
+            EmployeeTitle: "",
+            PhotoFileName: "Photos/BadAss.JPG",
+            DateOfJoining: "",
+            EmployeeStatus: ""
+        })
+    }
+
+    editClick(employee) {
+        console.log(employee.EmployeeName)
+        this.setState({
+            modalTitle: "Edit Employee",
+            EmployeeId: employee.EmployeeId,
+            EmployeeName: employee.EmployeeName,
+            EmployeeTitle: employee.EmployeeTitle,
+            DateOfJoining: employee.DateOfJoining,
+            EmployeeStatus: employee.EmployeeStatus,
+            PhotoFileName: employee.PhotoFileName
+        })
+    }
+    
+    createClick() {
+        fetch(variables.API_URL+'employee', {
+            method: 'POST',
+            headers: {
+                'Accept': 'appication/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                EmployeeName: this.state.EmployeeName,
+                EmployeeTitle: this.state.EmployeeTitle,
+                PhotoFileName: this.state.PhotoFileName,
+                DateOfJoining: this.state.DateOfJoining,
+                EmployeeStatus: this.state.EmployeeStatus
+            })
+        })
+        .then(res => res.json())
+        .then((result) => {
+            alert(result);
+            this.refreshList();
+        }, (error) => {
+            alert('Failed to create employee record');
+        })
+    }
+
+    updateClick() {
+        fetch(variables.API_URL+'employee', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'appication/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                EmployeeId: this.state.EmployeeId,
+                EmployeeName: this.state.EmployeeName,
+                EmployeeTitle: this.state.EmployeeTitle,
+                PhotoFileName: this.state.PhotoFileName,
+                DateOfJoining: this.state.DateOfJoining,
+                EmployeeStatus: this.state.EmployeeStatus
+            })
+        })
+        .then(res => res.json())
+        .then((result) => {
+            alert(result);
+            this.refreshList();
+        }, (error) => {
+            alert('Failed to update employee record');
+        })
+    }
+
+
+    deleteClick(id) {
+        /* TODO: move record to inactive table instead of permanent deletion */
+        fetch(variables.API_URL+'employee/' + id, {
+            method: 'GET',
+            headers: {
+                'Accept': 'appication/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then((result) => { 
+            /* insert to Exemployees table */
+            
+        });        
+
+        if (window.confirm('Are you sure?')) {
+            //copy record to exempoyees table for safe keeping
+
+            // now delete it from current table
+            fetch(variables.API_URL+'employee/' + id, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'appication/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then((result) => {
+                alert(result);
+                this.refreshList();
+            }, (error) => {
+                alert('Failed to delete employment record');
+            })
+        }
+    } 
+
+    exportPdfClick(id) {
+        fetch(variables.API_URL+'employee/' + id, {
+            method: 'GET',
+            headers: {
+                'Accept': 'appication/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then((result) => {
+            alert(JSON.stringify(result));
+            const report = new jsPDF('portrait', 'pt', 'a4');
+            report.html(JSON.parse(result)).then(() => {
+                report.save('personel_report.pdf');
+            });
+        }, (error) => {
+            alert('Failed to export employment record to PDF file');
+        })
+    }
+
+    imageUpload = (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append("file", e.target.files[0], e.target.files[0].name);
+
+        fetch(variables.API_URL + 'employee/safefile', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            this.setState({PhotoFileName: data});
+        })
+    }
 
     
     render() {
@@ -25,18 +271,46 @@ export class Employment extends Component {
 
         return (
             <div>
-
+                <button type="button" className='btn btn-primary m-2 float-end'  data-target="#frontReport" onClick={() => this.generatePDF()}>
+                    Export PDF
+                </button>
                 <button type="button" className='btn btn-primary m-2 float-end' data-toggle="modal" data-target="#employModal" onClick={() => this.addClick()}>
                     Add Employee
                 </button>
-                <table className='table table-responsive-sm table-striped table-hover table-sm caption-top'>
+
+
+                <table className='table table-responsive-sm table-striped table-hover table-sm caption-top' id="frontReport">
                     <caption className='fs-5'>Tracking Personel Progress</caption>
                     <thead>
                         <tr>
                             <th>EmployeeId</th>
-                            <th>EmployeeName</th>
+                            <th>EmployeeName
+                                <button type="button" className="btn btn-light" onClick={()=> this.sortResults('EmployeeName', true)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" className="bi bi-arrow-down-square" viewBox="0 0 15 15">
+                                    <path fillRule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 2.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
+                                    </svg>
+                                </button>
+
+                                <button type="button" className="btn btn-light" onClick={()=> this.sortResults('EmployeeName', false)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" className="bi bi-arrow-up-square" viewBox="0 0 15 15">
+                                    <path fillRule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 9.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"/>
+                                    </svg>
+                                </button>                                    
+                            </th>
                             <th>EmployeeTitle</th>
-                            <th>DateOfJoining</th>
+                            <th>DateOfJoining 
+                                <button type="button" className="btn btn-light" onClick={()=> this.sortResults('DateOfJoining', true)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" className="bi bi-arrow-down-square" viewBox="0 0 15 15">
+                                    <path fillRule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 2.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
+                                    </svg>
+                                </button>
+
+                                <button type="button" className="btn btn-light" onClick={()=> this.sortResults('DateOfJoining', false)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" className="bi bi-arrow-up-square" viewBox="0 0 15 15">
+                                    <path fillRule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 9.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"/>
+                                    </svg>
+                                </button>                                    
+                            </th>
                             <th>Status</th>
                             <th>PhotoFileName</th>
                             <th>
@@ -168,188 +442,5 @@ export class Employment extends Component {
         )
     }
 
-    constructor(props) {
-        super(props);
-    
-        this.state = {
-            users: [],
-            employees: [],
-            modalTitle: "",
-
-            EmployeeName: "",
-            EmployeeId:0,
-            EmployeeTitle: variables.Titles,
-            DateOfJoining: "",
-            EmployeeStatus:"",
-            PhotoFileName: "",
-            PhotsPath: variables.PHOTO_URL
-        }
-    }
-
-    refreshList() {
-        fetch(variables.API_URL+'employee')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            this.setState({employees:data});
-        });
-
-        fetch(variables.API_URL+'user')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            this.setState({users:data});
-        });
-    }
-
-    componentDidMount() {
-        this.refreshList();
-    }
-
-    changeEmployeeName = (e) => {
-        this.setState({EmployeeName: e.target.value});
-    }
-
-    changeEmployeeTitle = (e) => {
-        this.setState({EmployeeTitle: e.target.value});
-    }
-
-    changeDateOfJoining = (e) => {
-        this.setState({DateOfJoining: e.target.value});
-    }    
-
-    changeEmploymentStatus = (e) => {
-        this.setState({EmployeeStatus: e.target.value});
-    }
-
-    addClick() {
-        this.setState({
-            modalTitle: "Add Employee",
-            EmployeeId: 0,
-            EmployeeName: "",
-            EmployeeTitle: "",
-            PhotoFileName: "Photos/BadAss.JPG",
-            DateOfJoining: "",
-            EmployeeStatus: ""
-        })
-    }
-
-    editClick(employee) {
-        console.log(employee.EmployeeName)
-        this.setState({
-            modalTitle: "Edit Employee",
-            EmployeeId: employee.EmployeeId,
-            EmployeeName: employee.EmployeeName,
-            EmployeeTitle: employee.EmployeeTitle,
-            DateOfJoining: employee.DateOfJoining,
-            EmployeeStatus: employee.EmployeeStatus,
-            PhotoFileName: employee.PhotoFileName
-        })
-    }
-    
-    createClick() {
-        fetch(variables.API_URL+'employee', {
-            method: 'POST',
-            headers: {
-                'Accept': 'appication/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                EmployeeName: this.state.EmployeeName,
-                EmployeeTitle: this.state.EmployeeTitle,
-                PhotoFileName: this.state.PhotoFileName,
-                DateOfJoining: this.state.DateOfJoining,
-                EmployeeStatus: this.state.EmployeeStatus
-            })
-        })
-        .then(res => res.json())
-        .then((result) => {
-            alert(result);
-            this.refreshList();
-        }, (error) => {
-            alert('Failed to create employee record');
-        })
-    }
-
-    updateClick() {
-        fetch(variables.API_URL+'employee', {
-            method: 'PUT',
-            headers: {
-                'Accept': 'appication/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                EmployeeId: this.state.EmployeeId,
-                EmployeeName: this.state.EmployeeName,
-                EmployeeTitle: this.state.EmployeeTitle,
-                PhotoFileName: this.state.PhotoFileName,
-                DateOfJoining: this.state.DateOfJoining,
-                EmployeeStatus: this.state.EmployeeStatus
-            })
-        })
-        .then(res => res.json())
-        .then((result) => {
-            alert(result);
-            this.refreshList();
-        }, (error) => {
-            alert('Failed to update employee record');
-        })
-    }
-
-
-    deleteClick(id) {
-        /* TODO: move record to inactive table instead of permanent deletion */
-         
-
-        if (window.confirm('Are you sure?')) {
-            fetch(variables.API_URL+'employee/' + id, {
-                method: 'DELETE',
-                headers: {
-                    'Accept': 'appication/json',
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(res => res.json())
-            .then((result) => {
-                alert(result);
-                this.refreshList();
-            }, (error) => {
-                alert('Failed to delete employment record');
-            })
-        }
-    } 
-
-    exportPdfClick(id) {
-        fetch(variables.API_URL+'employee/' + id, {
-            method: 'GET',
-            headers: {
-                'Accept': 'appication/json',
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(res => res.json())
-        .then((result) => {
-            alert(JSON.stringify(result));
-            // this.refreshList();
-        }, (error) => {
-            alert('Failed to export employment record to PDF file');
-        })
-    }
-
-    imageUpload = (e) => {
-        e.preventDefault();
-
-        const formData = new FormData();
-        formData.append("file", e.target.files[0], e.target.files[0].name);
-
-        fetch(variables.API_URL + 'employee/safefile', {
-            method: 'POST',
-            body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
-            this.setState({PhotoFileName: data});
-        })
-    }
 
 }
