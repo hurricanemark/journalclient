@@ -38,15 +38,15 @@ export class User extends Component {
     }
 
     changeUserIdFilter = (e) => {
-        this.setState({UserIdFilter: e.target.value});
-        // this.state.UserIdFilter = e.target.value;
+        // this.setState({UserIdFilter: e.target.value});
+        this.state.UserIdFilter = e.target.value;
         this.FilterFn();
     }
 
 
     changeUserNameFilter = (e) => {
-        this.setState({UserNameFilter: e.target.value});
-        // this.state.UserNameFilter = e.target.value;
+        // this.setState({UserNameFilter: e.target.value});
+        this.state.UserNameFilter = e.target.value;
         this.FilterFn();
     }
 
@@ -62,7 +62,7 @@ export class User extends Component {
 
         this.setState({users: sortedData});
     }
-    
+
     refreshList() {
         fetch(variables.API_URL+'user')
         .then(response => response.json())
